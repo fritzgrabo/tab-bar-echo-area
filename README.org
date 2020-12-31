@@ -1,0 +1,62 @@
+* tab-bar-echo-area.el
+
+Provides a global minor mode to temporarily display a list of available
+tab names (with the current tab's name highlighted) in the echo area
+after tab-related commands.
+
+The list of tab names shows after creating, closing, switching to, and
+renaming a tab, and remains visible until the next command is issued.
+
+This is intended to be used as an unobtrusive replacement for the Emacs
+built-in =tab-bar-mode=.
+
+* Installation
+
+If you use MELPA, an easy way to install this package is via
+=package-install=. Alternatively, download =tab-bar-echo-area.el=, put
+it in your =load-path= and =require= it. Finally, use
+=(tab-bar-echo-area-mode 1)= or =M-x tab-bar-echo-area-mode= to turn on
+the provided minor mode.
+
+If you use both MELPA and =use-package=, you can use this, too:
+
+#+begin_src emacs-lisp
+(use-package tab-bar-echo-area
+  :ensure t
+  :config
+  (tab-bar-echo-area-mode 1))
+#+end_src
+
+* Screenshots
+
+Showing 3 tab names =foobar=, =barbaz=, =bazqux=, with =bazqux= being
+highlighted as the current tab.
+
+[[screenshots/tab-bar-echo-area.png]]
+
+* Commands
+
+Table of available commands and their description.
+
+| Command                             | Description                                                         |
+|-------------------------------------+---------------------------------------------------------------------|
+| =tab-bar-echo-area-print-tab-name=  | Print the current tab's name to the echo area                       |
+| =tab-bar-echo-area-print-tab-names= | Print all tab names to the echo area (highlight current tab's name) |
+
+* Recommended Keybindings
+
+Note that this package doesn't bind any keys by itself.
+
+In my local configuration, I added bindings for the above commands to
+the pre-existing keymap for tab-related commands (=C-x t=):
+ 
+#+begin_src emacs-lisp
+(use-package tab-bar-echo-area
+  :ensure t
+  :demand t
+  :config
+  (tab-bar-echo-area-mode 1)
+  :bind (:map tab-prefix-map
+              ("c" . tab-bar-echo-area-print-tab-name)
+              ("p" . tab-bar-echo-area-print-tab-names)))
+#+end_src
