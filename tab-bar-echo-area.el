@@ -5,7 +5,7 @@
 ;; Author: Fritz Grabo <me@fritzgrabo.com>
 ;; URL: https://github.com/fritzgrabo/tab-bar-echo-area
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (tab-bar-utils "0.1") (s "1.12.0"))
+;; Package-Requires: ((emacs "27.1") (s "1.12.0"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -38,7 +38,6 @@
 
 ;;; Code:
 
-(require 'tab-bar-utils)
 (require 's)
 
 (defun tab-bar-echo-area--highlight-tab-name (tab-name)
@@ -52,8 +51,8 @@
 (defun tab-bar-echo-area-print-tab-names (&rest _args)
   "Prints all tab names with the current tab's name highlighted to the echo area."
   (interactive)
-  (let* ((tab-names (tab-bar-utils-tab-names))
-         (current-tab-name (tab-bar-utils-tab-name))
+  (let* ((tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (funcall tab-bar-tabs-function)))
+         (current-tab-name (alist-get 'name (tab-bar--current-tab)))
          (tab-names-with-current-tab-highlighted
           (mapcar
            (lambda (tab-name)
@@ -67,7 +66,7 @@
 (defun tab-bar-echo-area-print-tab-name ()
   "Print the current tab's name to the echo area."
   (interactive)
-  (message "Current Tab: %s" (tab-bar-utils-tab-name)))
+  (message "Current Tab: %s" (alist-get 'name (tab-bar--current-tab))))
 
 (defvar tab-bar-echo-area-functions
   '(tab-bar-close-tab
