@@ -35,7 +35,7 @@
 
 ;; This is intended to be used as an unobtrusive replacement for the
 ;; Emacs built-in display of the tab-bar (that is, when you have
-;; `tab-bar-show` set to `nil`).
+;; `tab-bar-show' set to nil).
 
 ;; The idea is to provide but a quick visual orientation aid to the user
 ;; after tab-related commands, and then get out of the way again.
@@ -93,7 +93,7 @@
 
 ;;;###autoload
 (define-minor-mode tab-bar-echo-area-mode
-  "Alternative to `tab-bar-mode`: print tab names in echo area after tab bar-related functions."
+  "Alternative to `tab-bar-mode': print tab names in echo area after tab bar-related functions."
   :group 'tab-bar
   :global t
   (dolist (f tab-bar-echo-area-functions)
