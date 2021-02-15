@@ -5,7 +5,7 @@
 ;; Author: Fritz Grabo <me@fritzgrabo.com>
 ;; URL: https://github.com/fritzgrabo/tab-bar-echo-area
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (s "1.12.0"))
+;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -47,13 +47,25 @@
 
 ;;; Code:
 
-(require 's)
+(eval-when-compile (require 'subr-x))
 
-(defun tab-bar-echo-area--highlight-tab-name (tab-name)
-  "Return a highlighted version of TAB-NAME."
+(defgroup tab-bar-echo-area ()
+  "Display tab names of the tab bar in the echo area."
+  :group 'tab-bar)
+
+(defface tab-bar-echo-area-current-tab
+  '((t :inherit bold))
+  "Face to highlight the current tab name.")
+
+(defface tab-bar-echo-area-other-tab
+  '((t :inherit shadow))
+  "Face to highlight tab names except the current one.")
+
+(defun tab-bar-echo-area--highlight-tab-name (tab-name face)
+  "Return a highlighted version of TAB-NAME using FACE."
   (let ((propertized-tab-name (concat tab-name)))
     ;; See https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html#Face-Attributes.
-    (font-lock-append-text-property 0 (length tab-name) 'face '(:inverse-video t) propertized-tab-name)
+    (font-lock-append-text-property 0 (length tab-name) 'face face propertized-tab-name)
     propertized-tab-name))
 
 ;;;###autoload
@@ -66,10 +78,10 @@
           (mapcar
            (lambda (tab-name)
              (if (string-equal tab-name current-tab-name)
-                 (tab-bar-echo-area--highlight-tab-name tab-name)
-               tab-name))
+                 (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-current-tab)
+               (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-other-tab)))
            tab-names)))
-    (message "Tabs: %s" (s-join ", " tab-names-with-current-tab-highlighted))))
+    (message "Tabs: %s" (string-join tab-names-with-current-tab-highlighted ", "))))
 
 ;;;###autoload
 (defun tab-bar-echo-area-print-tab-name ()
