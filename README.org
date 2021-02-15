@@ -39,7 +39,8 @@ If you use both MELPA and =use-package=, you can use this, too:
 * Screenshots
 
 Showing 3 tab names =foobar=, =barbaz=, =bazqux=, with =bazqux= being
-highlighted as the current tab.
+highlighted as the current tab. The faces applied to the current/other
+tabs are fully customizable.
 
 [[screenshots/tab-bar-echo-area.png]]
 
