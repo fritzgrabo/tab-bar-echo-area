@@ -5,7 +5,7 @@
 ;; Author: Fritz Grabo <me@fritzgrabo.com>
 ;; URL: https://github.com/fritzgrabo/tab-bar-echo-area
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1") (s "1.12.0"))
+;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: convenience
 
 ;; This file is not part of GNU Emacs.
@@ -47,7 +47,7 @@
 
 ;;; Code:
 
-(require 's)
+(eval-when-compile (require 'subr-x))
 
 (defun tab-bar-echo-area--highlight-tab-name (tab-name)
   "Return a highlighted version of TAB-NAME."
@@ -69,7 +69,7 @@
                  (tab-bar-echo-area--highlight-tab-name tab-name)
                tab-name))
            tab-names)))
-    (message "Tabs: %s" (s-join ", " tab-names-with-current-tab-highlighted))))
+    (message "Tabs: %s" (string-join tab-names-with-current-tab-highlighted ", "))))
 
 ;;;###autoload
 (defun tab-bar-echo-area-print-tab-name ()
