@@ -72,15 +72,15 @@
 (defun tab-bar-echo-area-print-tab-names (&rest _args)
   "Prints all tab names with the current tab's name highlighted to the echo area."
   (interactive)
-  (let* ((tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (funcall tab-bar-tabs-function)))
-         (current-tab-name (alist-get 'name (tab-bar--current-tab)))
-         (tab-names-with-current-tab-highlighted
+  (let* ((tab-names-with-current-tab-highlighted
           (mapcar
-           (lambda (tab-name)
-             (if (string-equal tab-name current-tab-name)
-                 (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-current-tab)
-               (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-other-tab)))
-           tab-names)))
+           (lambda (tab)
+             (let ((tab-type (car tab))
+                   (tab-name (alist-get 'name tab)))
+               (if (equal tab-type 'current-tab)
+                   (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-current-tab)
+                 (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-other-tab))))
+           (funcall tab-bar-tabs-function))))
     (message "Tabs: %s" (string-join tab-names-with-current-tab-highlighted ", "))))
 
 ;;;###autoload
