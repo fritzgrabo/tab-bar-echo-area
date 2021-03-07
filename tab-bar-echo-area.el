@@ -114,6 +114,10 @@
   "Alternative to `tab-bar-mode': display tab names in the echo area after tab bar-related functions."
   :group 'tab-bar
   :global t
+  (tab-bar-echo-area-apply-display-tab-names-advice))
+
+(defun tab-bar-echo-area-apply-display-tab-names-advice ()
+  "Add or remove advice to display tab names according to variable `tab-bar-echo-area-mode'."
   (dolist (f tab-bar-echo-area-trigger-display-functions)
     (if tab-bar-echo-area-mode
         (advice-add f :around #'tab-bar-echo-area-display-tab-names-advice)
