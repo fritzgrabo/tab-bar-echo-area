@@ -69,8 +69,8 @@
     propertized-tab-name))
 
 ;;;###autoload
-(defun tab-bar-echo-area-print-tab-names (&rest _args)
-  "Prints all tab names with the current tab's name highlighted to the echo area."
+(defun tab-bar-echo-area-display-tab-names (&rest _args)
+  "Display all tab names with the current tab's name highlighted in the echo area."
   (interactive)
   (let* ((tab-names-with-current-tab-highlighted
           (mapcar
@@ -84,34 +84,40 @@
     (message "Tabs: %s" (string-join tab-names-with-current-tab-highlighted ", "))))
 
 ;;;###autoload
-(defun tab-bar-echo-area-print-tab-name ()
-  "Print the current tab's name to the echo area."
+(defalias 'tab-bar-echo-area-print-tab-names 'tab-bar-echo-area-display-tab-names)
+
+;;;###autoload
+(defun tab-bar-echo-area-display-tab-name ()
+  "Display the current tab's name in the echo area."
   (interactive)
   (message "Current Tab: %s" (alist-get 'name (tab-bar--current-tab))))
 
-(defvar tab-bar-echo-area-functions
+;;;###autoload
+(defalias 'tab-bar-echo-area-print-tab-name 'tab-bar-echo-area-display-tab-name)
+
+(defvar tab-bar-echo-area-trigger-display-functions
   '(tab-bar-close-tab
     tab-bar-move-tab-to
     tab-bar-new-tab-to
     tab-bar-rename-tab
     tab-bar-select-tab)
-  "List of functions after which to print tab names in echo area.")
+  "List of functions after which to display tab names in the echo area.")
 
-(defun tab-bar-echo-area-print-tab-names-advice (orig-fun &rest args)
-  "Call ORIG-FUN with ARGS, then print tab names in echo area."
+(defun tab-bar-echo-area-display-tab-names-advice (orig-fun &rest args)
+  "Call ORIG-FUN with ARGS, then display tab names in the echo area."
   (let ((result (apply orig-fun args)))
-    (tab-bar-echo-area-print-tab-names)
+    (tab-bar-echo-area-display-tab-names)
     result))
 
 ;;;###autoload
 (define-minor-mode tab-bar-echo-area-mode
-  "Alternative to `tab-bar-mode': print tab names in echo area after tab bar-related functions."
+  "Alternative to `tab-bar-mode': display tab names in the echo area after tab bar-related functions."
   :group 'tab-bar
   :global t
-  (dolist (f tab-bar-echo-area-functions)
+  (dolist (f tab-bar-echo-area-trigger-display-functions)
     (if tab-bar-echo-area-mode
-        (advice-add f :around #'tab-bar-echo-area-print-tab-names-advice)
-      (advice-remove f #'tab-bar-echo-area-print-tab-names-advice))))
+        (advice-add f :around #'tab-bar-echo-area-display-tab-names-advice)
+      (advice-remove f #'tab-bar-echo-area-display-tab-names-advice))))
 
 (provide 'tab-bar-echo-area)
 ;;; tab-bar-echo-area.el ends here

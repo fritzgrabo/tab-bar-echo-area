@@ -48,10 +48,10 @@ tabs are fully customizable.
 
 Table of available commands and their description.
 
-| Command                             | Description                                                         |
-|-------------------------------------+---------------------------------------------------------------------|
-| =tab-bar-echo-area-print-tab-name=  | Print the current tab's name to the echo area                       |
-| =tab-bar-echo-area-print-tab-names= | Print all tab names to the echo area (highlight current tab's name) |
+| Command                               | Description                                                           |
+|---------------------------------------+-----------------------------------------------------------------------|
+| =tab-bar-echo-area-display-tab-name=  | Display the current tab's name in the echo area                       |
+| =tab-bar-echo-area-display-tab-names= | Display all tab names in the echo area (highlight current tab's name) |
 
 * Recommended Keybindings
 
@@ -67,6 +67,6 @@ the pre-existing keymap for tab-related commands (=C-x t=):
   :config
   (tab-bar-echo-area-mode 1)
   :bind (:map tab-prefix-map
-              ("c" . tab-bar-echo-area-print-tab-name)
-              ("p" . tab-bar-echo-area-print-tab-names)))
+              ("c" . tab-bar-echo-area-display-tab-name)
+              ("p" . tab-bar-echo-area-display-tab-names)))
 #+end_src
