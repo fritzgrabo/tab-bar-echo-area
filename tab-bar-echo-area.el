@@ -61,6 +61,14 @@
   '((t :inherit shadow))
   "Face to highlight tab names except the current one.")
 
+(defvar tab-bar-echo-area-trigger-display-functions
+  '(tab-bar-close-tab
+    tab-bar-move-tab-to
+    tab-bar-new-tab-to
+    tab-bar-rename-tab
+    tab-bar-select-tab)
+  "List of functions after which to display tab names in the echo area.")
+
 (defun tab-bar-echo-area--highlight-tab-name (tab-name face)
   "Return a highlighted version of TAB-NAME using FACE."
   (let ((propertized-tab-name (concat tab-name)))
@@ -94,14 +102,6 @@
 
 ;;;###autoload
 (defalias 'tab-bar-echo-area-print-tab-name 'tab-bar-echo-area-display-tab-name)
-
-(defvar tab-bar-echo-area-trigger-display-functions
-  '(tab-bar-close-tab
-    tab-bar-move-tab-to
-    tab-bar-new-tab-to
-    tab-bar-rename-tab
-    tab-bar-select-tab)
-  "List of functions after which to display tab names in the echo area.")
 
 (defun tab-bar-echo-area-display-tab-names-advice (orig-fun &rest args)
   "Call ORIG-FUN with ARGS, then display tab names in the echo area."
