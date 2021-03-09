@@ -55,11 +55,11 @@
 
 (defface tab-bar-echo-area-current-tab
   '((t :inherit bold))
-  "Face to highlight the current tab name.")
+  "Face to use for the current tab name.")
 
 (defface tab-bar-echo-area-other-tab
   '((t :inherit shadow))
-  "Face to highlight tab names except the current one.")
+  "Face to use for tab names except the current one.")
 
 (defvar tab-bar-echo-area-trigger-display-functions
   '(tab-bar-close-tab
@@ -69,27 +69,38 @@
     tab-bar-select-tab)
   "List of functions after which to display tab names in the echo area.")
 
-(defun tab-bar-echo-area--highlight-tab-name (tab-name face)
-  "Return a highlighted version of TAB-NAME using FACE."
-  (let ((propertized-tab-name (concat tab-name)))
-    ;; See https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html#Face-Attributes.
-    (font-lock-append-text-property 0 (length tab-name) 'face face propertized-tab-name)
-    propertized-tab-name))
+(defvar tab-bar-echo-area-process-tab-name-functions
+  (list #'tab-bar-echo-area-propertize-tab-name)
+  "List of functions to call to fully process a tab's name for display.
+
+Each function is expected to take a TAB-NAME and its TAB as
+arguments, and to return TAB-NAME further processed for
+display.")
+
+(defun tab-bar-echo-area-propertize-tab-name (tab-name tab)
+  "Propertize TAB-NAME for TAB."
+  (let ((face (if (equal (car tab) 'current-tab)
+                  'tab-bar-echo-area-current-tab
+                'tab-bar-echo-area-other-tab)))
+    (font-lock-append-text-property 0 (length tab-name) 'face face tab-name))
+  tab-name)
+
+(defun tab-bar-echo-area-processed-tab-names ()
+  "Generate a list of processed tab names."
+  (mapcar #'tab-bar-echo-area-process-tab-name (funcall tab-bar-tabs-function)))
+
+(defun tab-bar-echo-area-process-tab-name (tab)
+  "Process tab name for TAB."
+  (let ((tab-name (concat (alist-get 'name tab))))
+    (dolist (f tab-bar-echo-area-process-tab-name-functions)
+      (setq tab-name (funcall f tab-name tab)))
+    tab-name))
 
 ;;;###autoload
 (defun tab-bar-echo-area-display-tab-names (&rest _args)
-  "Display all tab names with the current tab's name highlighted in the echo area."
+  "Display all tab names in the echo area."
   (interactive)
-  (let* ((tab-names-with-current-tab-highlighted
-          (mapcar
-           (lambda (tab)
-             (let ((tab-type (car tab))
-                   (tab-name (alist-get 'name tab)))
-               (if (equal tab-type 'current-tab)
-                   (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-current-tab)
-                 (tab-bar-echo-area--highlight-tab-name tab-name 'tab-bar-echo-area-other-tab))))
-           (funcall tab-bar-tabs-function))))
-    (message "Tabs: %s" (string-join tab-names-with-current-tab-highlighted ", "))))
+  (message "Tabs: %s" (string-join (tab-bar-echo-area-processed-tab-names) ", ")))
 
 ;;;###autoload
 (defalias 'tab-bar-echo-area-print-tab-names 'tab-bar-echo-area-display-tab-names)
@@ -98,7 +109,7 @@
 (defun tab-bar-echo-area-display-tab-name ()
   "Display the current tab's name in the echo area."
   (interactive)
-  (message "Current Tab: %s" (alist-get 'name (tab-bar--current-tab))))
+  (message "Current Tab: %s" (tab-bar-echo-area-process-tab-name (tab-bar--current-tab))))
 
 ;;;###autoload
 (defalias 'tab-bar-echo-area-print-tab-name 'tab-bar-echo-area-display-tab-name)
