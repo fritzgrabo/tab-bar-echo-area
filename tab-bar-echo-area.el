@@ -66,7 +66,8 @@
     tab-bar-move-tab-to
     tab-bar-new-tab-to
     tab-bar-rename-tab
-    tab-bar-select-tab)
+    tab-bar-select-tab
+    display-buffer-in-new-tab)
   "List of functions after which to display tab names in the echo area.")
 
 (defvar tab-bar-echo-area-process-tab-name-functions
