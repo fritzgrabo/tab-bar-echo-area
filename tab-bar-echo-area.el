@@ -110,7 +110,10 @@ a description of the arguments passed into these functions.")
 
 (defvar tab-bar-echo-area-format
   nil
-  "Optional customization of `tab-bar-format' in the context of the echo area.")
+  "Optional customization of `tab-bar-format' in the context of the echo area.
+
+Note that `tab-bar-format' was introduced in Emacs 28 only.
+Setting this will have no effect in Emacs 27.")
 
 ;; --- Keymap handling
 
@@ -205,7 +208,7 @@ If the keymap element does not relate to a tab, return nil."
 
 (defun tab-bar-echo-area--processed-tab-names ()
   "Generate a list of fully processed tab names for display in the echo area."
-  (let* ((tab-bar-format (or tab-bar-echo-area-format tab-bar-format))
+  (let* ((tab-bar-format (or tab-bar-echo-area-format (and (boundp 'tab-bar-format) tab-bar-format)))
          (keymap (funcall tab-bar-echo-area-make-keymap-function))
          (keymap-elements (seq-filter #'tab-bar-echo-area--keymap-element-type (cdr keymap)))
          (keymap-elements-count (length keymap-elements)))
