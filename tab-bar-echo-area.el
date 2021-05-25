@@ -206,12 +206,9 @@ If the keymap element does not relate to a tab, return nil."
     tab-bar-echo-area-format-tab-name-functions)
    name))
 
-(defun tab-bar-echo-area--processed-tab-names ()
-  "Generate a list of fully processed tab names for display in the echo area."
-  (let* ((tab-bar-format (or tab-bar-echo-area-format (and (boundp 'tab-bar-format) tab-bar-format)))
-         (keymap (funcall tab-bar-echo-area-make-keymap-function))
-         (keymap-elements (seq-filter #'tab-bar-echo-area--keymap-element-type (cdr keymap)))
-         (keymap-elements-count (length keymap-elements)))
+(defun tab-bar-echo-area--processed-tab-names (keymap-elements)
+  "Generate a list of fully processed tab names for KEYMAP-ELEMENTS for display in the echo area."
+  (let ((keymap-elements-count (length keymap-elements)))
     (seq-map-indexed (lambda (keymap-element index)
                        (funcall #'tab-bar-echo-area--process-tab-name
                                 (caddr keymap-element) ;; name
@@ -227,8 +224,11 @@ If the keymap element does not relate to a tab, return nil."
 (defun tab-bar-echo-area-display-tab-names ()
   "Display tab names in the echo area."
   (interactive)
-  (if-let ((tab-names (tab-bar-echo-area--processed-tab-names)))
-      (message "Tabs: %s" (string-join tab-names))))
+  (let* ((tab-bar-format (or tab-bar-echo-area-format (and (boundp 'tab-bar-format) tab-bar-format)))
+         (keymap (funcall tab-bar-echo-area-make-keymap-function))
+         (keymap-elements (seq-filter #'tab-bar-echo-area--keymap-element-type (cdr keymap))))
+    (if-let ((tab-names (tab-bar-echo-area--processed-tab-names keymap-elements)))
+        (message "Tabs: %s" (string-join tab-names)))))
 
 ;;;###autoload
 (defalias 'tab-bar-echo-area-print-tab-names 'tab-bar-echo-area-display-tab-names) ;; v0.1, deprecated
