@@ -115,6 +115,19 @@ a description of the arguments passed into these functions.")
 Note that `tab-bar-format' was introduced in Emacs 28 only.
 Setting this will have no effect in Emacs 27.")
 
+(defvar tab-bar-echo-area-display-tab-names-format-string
+  "Tabs: %s"
+  "Format string to use for rendering tab names in the echo area.
+
+If the value is a string, use it as the format string.
+
+If the value is a function, call it to generate the format string
+to use.  The function is expected to take KEYMAP-ELEMENTS (the
+keymap elements that will be displayed) as an argument.
+
+The format string is expected to contain a single \"%s\", which
+will be substituted with the list of fully processed tab names.")
+
 ;; --- Keymap handling
 
 (defvar tab-bar-echo-area-make-keymap-function
@@ -227,8 +240,13 @@ If the keymap element does not relate to a tab, return nil."
   (let* ((tab-bar-format (or tab-bar-echo-area-format (and (boundp 'tab-bar-format) tab-bar-format)))
          (keymap (funcall tab-bar-echo-area-make-keymap-function))
          (keymap-elements (seq-filter #'tab-bar-echo-area--keymap-element-type (cdr keymap))))
-    (if-let ((tab-names (tab-bar-echo-area--processed-tab-names keymap-elements)))
-        (message "Tabs: %s" (string-join tab-names)))))
+    (if-let ((tab-names (tab-bar-echo-area--processed-tab-names keymap-elements))
+             (format-string (cond ((functionp tab-bar-echo-area-display-tab-names-format-string)
+                                   (funcall tab-bar-echo-area-display-tab-names-format-string keymap-elements))
+                                  ((stringp tab-bar-echo-area-display-tab-names-format-string)
+                                   tab-bar-echo-area-display-tab-names-format-string)
+                                  (t "%s"))))
+        (message format-string (string-join tab-names)))))
 
 ;;;###autoload
 (defalias 'tab-bar-echo-area-print-tab-names 'tab-bar-echo-area-display-tab-names) ;; v0.1, deprecated
