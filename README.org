@@ -32,7 +32,7 @@ If you use both MELPA and =use-package=, you can use this, too:
 (use-package tab-bar-echo-area
   :ensure
   :config
-  (tab-bar-echo-area-mode))
+  (tab-bar-echo-area-mode 1))
 #+end_src
 
 * Screenshots
@@ -67,13 +67,13 @@ Note that this package doesn't bind any keys by itself.
 
 In my local configuration, I added bindings for the above commands to
 the pre-existing keymap for tab-related commands (=C-x t=):
- 
+
 #+begin_src emacs-lisp
 (use-package tab-bar-echo-area
   :ensure
   :demand
   :config
-  (tab-bar-echo-area-mode)
+  (tab-bar-echo-area-mode 1)
   :bind (:map tab-prefix-map
               ("c" . tab-bar-echo-area-display-tab-name)
               ("P" . tab-bar-echo-area-display-tab-names)))
