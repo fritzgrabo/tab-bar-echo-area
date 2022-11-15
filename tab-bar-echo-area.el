@@ -137,7 +137,8 @@ will be substituted with the list of fully processed tab names.")
 (defun tab-bar-echo-area-make-keymap ()
   "Make a keymap to use as the source of tabs to display."
   (let ((tab-bar-close-button-show nil)
-        (tab-bar-tab-hints nil))
+        (tab-bar-tab-hints nil)
+        (tab-bar-auto-width nil))
     (tab-bar-make-keymap)))
 
 (defvar tab-bar-echo-area--keymap-element-type-regex
