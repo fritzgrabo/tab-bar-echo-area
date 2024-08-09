@@ -142,7 +142,7 @@ will be substituted with the list of fully processed tab names.")
     (tab-bar-make-keymap)))
 
 (defvar tab-bar-echo-area--keymap-element-type-regex
-  "^\\(group\\|\\(?:current-\\)?tab\\)\\(?:-\\([[:digit:]]+\\)\\)?$"
+  "^\\(\\(?:current-\\)?group\\|\\(?:current-\\)?tab\\)\\(?:-\\([[:digit:]]+\\)\\)?$"
   "Regex to detect relevant tab bar keymap elements by their type.
 
 The Regex must provide at least two match groups.  The first
